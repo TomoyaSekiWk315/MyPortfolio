@@ -1,10 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: 'export',
   images: {
-    domains: ['**'],
     unoptimized: true,
   },
+  basePath: '',
 };
 
 export default nextConfig;
