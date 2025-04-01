@@ -16,11 +16,11 @@ export default function Particles({ mousePosition }: ParticlesProps) {
   
   // パーティクルの位置を生成
   const particles = useMemo(() => {
-    const positions = new Float32Array(12000 * 3)
-    const velocities = new Float32Array(12000 * 3)
-    const colors = new Float32Array(12000 * 3)
+    const positions = new Float32Array(52000 * 3)
+    const velocities = new Float32Array(52000 * 3)
+    const colors = new Float32Array(52000 * 3)
     
-    for (let i = 0; i < 12000; i++) {
+    for (let i = 0; i < 52000; i++) {
       const i3 = i * 3
       positions[i3] = (Math.random() - 0.5) * 10
       positions[i3 + 1] = (Math.random() - 0.5) * 10
