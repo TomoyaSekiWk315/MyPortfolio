@@ -4,10 +4,18 @@ import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { toast } from 'react-hot-toast'
 
 // GSAPプラグインの登録
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
+}
+
+// メール送信関数
+const sendEmail = async (data: { name: string; email: string; subject: string; message: string }) => {
+  console.log('Sending email:', data)
+  // 実際のメール送信処理は後で実装
+  return Promise.resolve()
 }
 
 export default function ContactSection() {
@@ -25,7 +33,6 @@ export default function ContactSection() {
   // 送信状態管理
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formStatus, setFormStatus] = useState<null | 'success' | 'error'>(null);
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
   
   // スクロールアニメーション設定
   useEffect(() => {
@@ -59,15 +66,6 @@ export default function ContactSection() {
       ...prev,
       [name]: value
     }));
-    
-    // 入力時にエラーをクリア
-    if (errors[name]) {
-      setErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[name];
-        return newErrors;
-      });
-    }
   };
   
   // フォーム検証
@@ -88,7 +86,7 @@ export default function ContactSection() {
       newErrors.message = 'メッセージを入力してください';
     }
     
-    setErrors(newErrors);
+    setFormStatus(Object.keys(newErrors).length === 0 ? null : 'error');
     return Object.keys(newErrors).length === 0;
   };
   
@@ -102,21 +100,16 @@ export default function ContactSection() {
     setFormStatus(null);
     
     try {
-      // 実際のプロジェクトではここにAPIリクエストを追加
-      // このデモでは送信をシミュレート
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // 成功時の処理
-      setFormStatus('success');
+      await sendEmail(formData)
+      toast.success('メッセージを送信しました')
       setFormData({
         name: '',
         email: '',
         subject: '',
         message: ''
       });
-    } catch (error) {
-      // エラー時の処理
-      setFormStatus('error');
+    } catch {
+      toast.error('メッセージの送信に失敗しました')
     } finally {
       setIsSubmitting(false);
     }
@@ -282,11 +275,11 @@ export default function ContactSection() {
                           value={formData.name} 
                           onChange={handleChange} 
                           className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all
-                            ${errors.name ? 'border-red-300 focus:ring-red-100' : 'border-gray-300 focus:ring-primary-100 focus:border-primary'}`}
+                            ${formStatus === 'error' ? 'border-red-300 focus:ring-red-100' : 'border-gray-300 focus:ring-primary-100 focus:border-primary'}`}
                           placeholder="山田 太郎"
                         />
-                        {errors.name && (
-                          <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                        {formStatus === 'error' && (
+                          <p className="text-red-500 text-sm mt-1">{formStatus === 'error' ? 'このフィールドは必須です' : ''}</p>
                         )}
                       </div>
                       
@@ -302,11 +295,11 @@ export default function ContactSection() {
                           value={formData.email} 
                           onChange={handleChange} 
                           className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all
-                            ${errors.email ? 'border-red-300 focus:ring-red-100' : 'border-gray-300 focus:ring-primary-100 focus:border-primary'}`}
+                            ${formStatus === 'error' ? 'border-red-300 focus:ring-red-100' : 'border-gray-300 focus:ring-primary-100 focus:border-primary'}`}
                           placeholder="your-email@example.com"
                         />
-                        {errors.email && (
-                          <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                        {formStatus === 'error' && (
+                          <p className="text-red-500 text-sm mt-1">{formStatus === 'error' ? 'このフィールドは必須です' : ''}</p>
                         )}
                       </div>
                     </div>
@@ -343,11 +336,11 @@ export default function ContactSection() {
                         onChange={handleChange} 
                         rows={5} 
                         className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all
-                          ${errors.message ? 'border-red-300 focus:ring-red-100' : 'border-gray-300 focus:ring-primary-100 focus:border-primary'}`}
+                          ${formStatus === 'error' ? 'border-red-300 focus:ring-red-100' : 'border-gray-300 focus:ring-primary-100 focus:border-primary'}`}
                         placeholder="お問い合わせ内容を入力してください"
                       ></textarea>
-                      {errors.message && (
-                        <p className="text-red-500 text-sm mt-1">{errors.message}</p>
+                      {formStatus === 'error' && (
+                        <p className="text-red-500 text-sm mt-1">{formStatus === 'error' ? 'このフィールドは必須です' : ''}</p>
                       )}
                     </div>
                     

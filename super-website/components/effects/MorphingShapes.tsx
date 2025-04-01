@@ -1,7 +1,6 @@
 'use client'
-import { useRef, useMemo } from 'react'
+import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { MeshDistortMaterial } from '@react-three/drei'
 import * as THREE from 'three'
 
 interface MorphingShapesProps {
@@ -9,27 +8,20 @@ interface MorphingShapesProps {
 }
 
 export default function MorphingShapes({ scrollProgress }: MorphingShapesProps) {
-  const meshRef = useRef<THREE.Mesh>(null)
-
-  useFrame((state, delta) => {
-    if (!meshRef.current) return
-
-    // スクロールに応じて形状を変化させる
-    meshRef.current.rotation.x = scrollProgress * Math.PI
-    meshRef.current.rotation.y = scrollProgress * Math.PI * 0.5
+  const groupRef = useRef<THREE.Group>(null)
+  
+  useFrame(() => {
+    if (!groupRef.current) return
+    
+    // スクロールに応じた形状の変化
+    const rotationSpeed = 0.5 + scrollProgress * 0.5
+    groupRef.current.rotation.x += 0.01 * rotationSpeed
+    groupRef.current.rotation.y += 0.01 * rotationSpeed
   })
-
+  
   return (
-    <mesh ref={meshRef} position={[0, 0, -2]}>
-      <sphereGeometry args={[2, 64, 64]} />
-      <MeshDistortMaterial
-        color="#ff6b00"
-        speed={1.5}
-        distort={0.4}
-        radius={2}
-        transparent
-        opacity={0.1}
-      />
-    </mesh>
+    <group ref={groupRef}>
+      {/* 形状の実装 */}
+    </group>
   )
 } 

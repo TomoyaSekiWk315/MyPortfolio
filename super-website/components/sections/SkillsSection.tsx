@@ -3,10 +3,7 @@ import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import { skills, skillCategories, Skill } from '@/data/skills'
 import gsap from 'gsap'
-import ScrollTrigger from 'gsap/ScrollTrigger'
-import Image from 'next/image'
-
-gsap.registerPlugin(ScrollTrigger)
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 // パーティクルを別のクライアントコンポーネントに分離
 const FloatingParticles = () => {

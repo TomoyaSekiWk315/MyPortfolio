@@ -1,7 +1,6 @@
 'use client'
-import { useRef, useState, useEffect, Suspense } from 'react'
-import { useFrame, extend, useLoader } from '@react-three/fiber'
-import { Text } from '@react-three/drei'
+import { useRef, useState, Suspense } from 'react'
+import { useFrame, useLoader } from '@react-three/fiber'
 import * as THREE from 'three'
 import { Project } from '@/types'
 

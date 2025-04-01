@@ -5,9 +5,10 @@ interface IconProps {
   name: string;
   color: string;
   size?: number;
+  className?: string;
 }
 
-export default function ServiceIcon({ name, color, size = 48 }: IconProps) {
+export default function ServiceIcon({ name, color, size = 48, className }: IconProps) {
   const renderIcon = () => {
     switch (name) {
       case 'code':
@@ -47,7 +48,7 @@ export default function ServiceIcon({ name, color, size = 48 }: IconProps) {
   };
 
   return (
-    <div className="service-icon">
+    <div className={className}>
       {renderIcon()}
     </div>
   );

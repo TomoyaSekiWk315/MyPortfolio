@@ -1,7 +1,6 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
 import { projects } from '@/data/projects'
-import { Project } from '@/types'
 import Image from 'next/image'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
@@ -12,7 +11,6 @@ export default function WorksSection() {
   const sectionRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const nextSectionRef = useRef<HTMLDivElement>(null)
-  const [activeProject, setActiveProject] = useState<Project | null>(null)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isLastProject, setIsLastProject] = useState(false)
   const isScrollingRef = useRef(false)
@@ -55,15 +53,14 @@ export default function WorksSection() {
   // マウスホイールスクロール検出と水平スクロール処理
   useEffect(() => {
     const section = sectionRef.current
-    if (!section || !containerRef.current) return
+    const container = containerRef.current
+    if (!section || !container) return
     
     // スクロール状態を監視して現在のインデックスを更新
     const updateCurrentIndex = () => {
-      if (!containerRef.current) return
-      
-      const scrollPosition = containerRef.current.scrollLeft
-      const containerWidth = containerRef.current.clientWidth
-      const scrollWidth = containerRef.current.scrollWidth
+      const scrollPosition = container.scrollLeft
+      const containerWidth = container.clientWidth
+      const scrollWidth = container.scrollWidth
       const newIndex = Math.round(scrollPosition / containerWidth)
       
       // 最後のプロジェクトまでスクロールしたかチェック
@@ -86,7 +83,7 @@ export default function WorksSection() {
     
     // ホイールスクロールを水平/垂直スクロールに変換
     const handleWheel = (e: WheelEvent) => {
-      if (!containerRef.current) return
+      if (!container) return
       
       // 最後のプロジェクトに到達していない場合は水平スクロール
       if (!isLastProject) {
@@ -148,7 +145,7 @@ export default function WorksSection() {
     }
     
     // スクロールイベントリスナーの登録
-    containerRef.current.addEventListener('scroll', handleScroll, { passive: true })
+    container.addEventListener('scroll', handleScroll, { passive: true })
     
     // ホイールイベントをセクション全体でキャプチャ
     section.addEventListener('wheel', wheelHandler, { passive: false })
@@ -156,9 +153,7 @@ export default function WorksSection() {
     section.addEventListener('touchend', handleTouchEnd, { passive: true })
     
     return () => {
-      if (containerRef.current) {
-        containerRef.current.removeEventListener('scroll', handleScroll)
-      }
+      container.removeEventListener('scroll', handleScroll)
       section.removeEventListener('wheel', wheelHandler)
       section.removeEventListener('touchstart', handleTouchStart)
       section.removeEventListener('touchend', handleTouchEnd)

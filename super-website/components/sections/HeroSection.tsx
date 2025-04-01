@@ -2,13 +2,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Text3D, Center } from '@react-three/drei'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import FluidBackground from '@/components/three/FluidBackground'
-import Particles from '@/components/effects/Particles'
-import MouseLight from '@/components/effects/MouseLight'
-import MorphingShapes from '@/components/effects/MorphingShapes'
+import Particles from '../effects/Particles'
+import MouseLight from '../effects/MouseLight'
+import MorphingShapes from '../effects/MorphingShapes'
 
 // GSAPプラグインの登録
 if (typeof window !== 'undefined') {
@@ -87,7 +86,7 @@ export default function HeroSection() {
           <color attach="background" args={['#121212']} />
           <FluidBackground />
           <Particles mousePosition={mousePosition} />
-          <MorphingShapes scrollProgress={scrollYProgress} />
+          <MorphingShapes scrollProgress={scrollYProgress.get()} />
         </Canvas>
       </div>
       

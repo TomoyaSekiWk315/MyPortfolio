@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "gsap": "^3.12.7"
+    "gsap": "^3.12.7",
+    "react-hot-toast": "^2.5.2"
   }
 }
