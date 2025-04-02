@@ -235,7 +235,7 @@ export default function ContactSection() {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <div className="bg-white p-8 rounded-xl shadow-lg">
+              <div className="bg-gray-50 p-8 rounded-xl shadow-lg">
                 {formStatus === 'success' ? (
                   <motion.div 
                     className="text-center py-10"

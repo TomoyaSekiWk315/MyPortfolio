@@ -160,8 +160,9 @@ export default function SkillsSection() {
 
   return (
     <section 
+      id="skills-section"
       ref={sectionRef}
-      className="relative h-screen w-full bg-background"
+      className="relative min-h-screen w-full bg-background overflow-x-hidden"
     >
       {/* パーティクルを背面に */}
       <div className="absolute inset-0 z-0">
@@ -170,38 +171,38 @@ export default function SkillsSection() {
       
       {/* メインコンテンツを前面に */}
       <motion.div 
-        className="container mx-auto px-4 relative z-50"
+        className="container mx-auto px-4 py-8 md:py-16 relative z-50"
         style={{ y, scale, opacity }}
         animate={floatAnimation}
         initial={{ opacity: 1, y: 0 }}
       >
-        <div className="flex flex-col md:flex-row gap-10">
+        <div className="flex flex-col lg:flex-row gap-6 md:gap-10">
           {/* 左側のテキストエリア */}
-          <div className="md:w-1/3">
+          <div className="w-full lg:w-1/3 lg:sticky lg:top-24">
             <motion.div
               initial={{ opacity: 1, y: 0 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="bg-white/95 backdrop-blur-md rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-all duration-300 mt-20"
+              className="bg-white/95 backdrop-blur-md rounded-2xl shadow-xl p-6 md:p-8 hover:shadow-2xl transition-all duration-300"
             >
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-4 md:mb-6">
                 <span className="text-primary">Skills</span> & <span className="text-text">Expertise</span>
               </h2>
               
-              <p className="text-gray-700 mb-8">
+              <p className="text-gray-700 mb-6 md:mb-8 text-sm md:text-base">
                 様々な技術を駆使してクリエイティブなWeb体験を構築します。
                 特にフロントエンド技術と3Dビジュアライゼーションに強みを持っています。
               </p>
               
               {/* カテゴリフィルター */}
-              <h3 className="text-lg font-semibold mb-2 text-text">カテゴリでフィルター</h3>
+              <h3 className="text-base md:text-lg font-semibold mb-2 text-text">カテゴリでフィルター</h3>
               <div className="flex flex-wrap gap-2">
                 {skillCategories.map(category => (
                   <button
                     key={category.id}
                     onClick={() => handleCategoryFilter(category.id)}
-                    className={`px-3 py-1 rounded-full text-sm transition-all duration-300 transform hover:scale-105 ${
+                    className={`px-2 md:px-3 py-1 rounded-full text-xs md:text-sm transition-all duration-300 transform hover:scale-105 ${
                       selectedCategory === category.id 
                         ? 'text-white shadow-lg' 
                         : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
@@ -218,8 +219,8 @@ export default function SkillsSection() {
           </div>
           
           {/* スキルグリッド */}
-          <div className="md:w-2/3">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-20">
+          <div className="w-full lg:w-2/3 min-h-[60vh] lg:min-h-screen">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               <AnimatePresence>
                 {filteredSkills.map((skill, index) => (
                   <motion.div
@@ -233,15 +234,15 @@ export default function SkillsSection() {
                       delay: index * 0.05,
                     }}
                     whileHover={{ 
-                      scale: 1.05, 
-                      y: -10,
-                      transition: { duration: 0.3 }
+                      scale: 1.02,
+                      y: -5,
+                      transition: { duration: 0.2 }
                     }}
                     className="cursor-pointer"
                     onClick={() => setSelectedSkill(skill)}
                   >
                     <div
-                      className="bg-white/95 backdrop-blur-md p-6 rounded-xl shadow-lg h-full transform-gpu transition-all duration-300 hover:shadow-2xl"
+                      className="bg-white/95 backdrop-blur-md p-4 md:p-6 rounded-xl shadow-lg h-full transform-gpu transition-all duration-300 hover:shadow-2xl"
                       style={{ 
                         borderLeft: `4px solid ${getSkillColor(skill.category)}`,
                         background: selectedSkill?.id === skill.id 
@@ -249,13 +250,13 @@ export default function SkillsSection() {
                           : undefined
                       }}
                     >
-                      <h3 className="text-xl font-bold mb-2 text-text">{skill.name}</h3>
-                      <p className="text-sm text-primary mb-3">
+                      <h3 className="text-lg md:text-xl font-bold mb-2 text-text">{skill.name}</h3>
+                      <p className="text-xs md:text-sm text-primary mb-3">
                         {skillCategories.find(cat => cat.id === skill.category)?.name}
                       </p>
                       
                       {/* スキルレベルバー */}
-                      <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="w-full h-1.5 md:h-2 bg-gray-200 rounded-full overflow-hidden">
                         <motion.div
                           initial={{ width: `${skill.level * 100}%` }}
                           animate={{ width: `${skill.level * 100}%` }}
@@ -268,7 +269,7 @@ export default function SkillsSection() {
                         <motion.div
                           initial={{ opacity: 1, height: 'auto' }}
                           animate={{ opacity: 1, height: 'auto' }}
-                          className="mt-4 text-sm text-gray-600 overflow-hidden"
+                          className="mt-3 md:mt-4 text-xs md:text-sm text-gray-600 overflow-hidden"
                         >
                           {skill.description}
                         </motion.div>
@@ -283,7 +284,7 @@ export default function SkillsSection() {
       </motion.div>
 
       {/* 次のセクションの参照用要素 */}
-      <div ref={nextSectionRef} className="absolute top-full left-0 w-full h-screen" />
+      <div ref={nextSectionRef} className="absolute top-full left-0 w-full h-screen pointer-events-none" />
     </section>
   )
 }

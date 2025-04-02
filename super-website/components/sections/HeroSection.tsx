@@ -2,29 +2,41 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { Canvas } from '@react-three/fiber'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import FluidBackground from '@/components/three/FluidBackground'
 import Particles from '../effects/Particles'
 import MouseLight from '../effects/MouseLight'
 import MorphingShapes from '../effects/MorphingShapes'
 
-// GSAPプラグインの登録
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger)
-}
-
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const titleRef = useRef<HTMLDivElement>(null)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const { scrollYProgress } = useScroll()
+  const [isMobile, setIsMobile] = useState(false)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"]
+  })
   
   // スクロールに応じたアニメーション値
-  const opacity = useTransform(scrollYProgress, [0.2, 0.7], [1, 0])
-  const scale = useTransform(scrollYProgress, [0.2, 0.7], [0.8, 0.6])
-  const y = useTransform(scrollYProgress, [0.2, 0.7], [0, -100])
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 1])
+  const y = useTransform(scrollYProgress, [0, 0.5], [0, isMobile ? -100 : 0])
+  const x = useTransform(scrollYProgress, [0, 0.5], [0, isMobile ? 0 : -300])
   
+  useEffect(() => {
+    // デバイスの判定
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile)
+    }
+  }, [])
+
   useEffect(() => {
     // マウス移動の追跡
     const handleMouseMove = (e: MouseEvent) => {
@@ -41,36 +53,11 @@ export default function HeroSection() {
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
   
-  useEffect(() => {
-    // スクロールアニメーション
-    if (!sectionRef.current || !titleRef.current) return
-    
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: 'top top',
-        end: '+=50%',
-        scrub: 0.5
-      }
-    })
-    
-    tl.to(titleRef.current, {
-      y: -100,
-      scale: 0.8,
-      opacity: 0
-    })
-    
-    return () => {
-      tl.kill()
-      ScrollTrigger.getAll().forEach(st => st.kill())
-    }
-  }, [])
-  
   return (
     <section 
       id="hero" 
       ref={sectionRef}
-      className="relative w-full min-h-screen flex flex-col items-center justify-center overflow-hidden"
+      className="relative w-full h-screen flex flex-col items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8"
     >
       {/* 背景エフェクト */}
       <div className="absolute inset-0 w-full h-full bg-background">
@@ -101,28 +88,29 @@ export default function HeroSection() {
       {/* メインタイトル */}
       <motion.div 
         ref={titleRef}
-        style={{ opacity, scale, y }}
-        initial={{ opacity: 0, y: 20, x: 0 }}
+        style={{ 
+          opacity, 
+          scale, 
+          y, 
+          x,
+          position: 'fixed',
+          top: isMobile ? '30%' : '50%',
+          left: isMobile ? '0%' : '10%',
+          transform: 'translate(-50%, -50%)',
+          width: isMobile ? '100%' : 'auto',
+          padding: isMobile ? '0 2rem' : '0',
+          boxSizing: 'border-box'
+        }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ 
           opacity: 1, 
           y: 0,
-          x: 0,
           transition: { duration: 1, delay: 0.5 }
         }}
-        whileInView={{
-          x: typeof window !== 'undefined' ? -window.innerWidth * 0.35 : 0,
-          y: 0,
-          scale: 0.8,
-          transition: {
-            delay: 2,
-            duration: 1.2,
-            ease: "easeInOut"
-          }
-        }}
-        className="text-center z-10"
+        className="text-center z-10 max-w-4xl mx-auto"
       >
         <motion.h1 
-          className="text-5xl md:text-7xl font-heading font-bold text-white mb-4"
+          className={`${isMobile ? 'text-2xl sm:text-3xl' : 'text-4xl sm:text-5xl md:text-6xl lg:text-7xl'} font-heading font-bold text-white mb-4`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.8 }}
@@ -144,7 +132,7 @@ export default function HeroSection() {
           </motion.span>
         </motion.h1>
         <motion.p 
-          className="text-white text-xl md:text-2xl"
+          className={`${isMobile ? 'text-sm sm:text-base' : 'text-lg sm:text-xl md:text-2xl'} text-white`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 1.4 }}
@@ -165,19 +153,19 @@ export default function HeroSection() {
             ease: "easeOut"
           }
         }}
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col gap-8"
+        className={`absolute ${isMobile ? 'bottom-20' : 'top-1/2'} left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col gap-3 sm:gap-4 md:gap-6`}
       >
         <motion.a
-          href="#works"
-          className="text-white text-3xl md:text-4xl font-medium hover:text-primary transition-colors"
+          href="#works-section"
+          className={`${isMobile ? 'text-lg sm:text-xl' : 'text-2xl sm:text-3xl md:text-4xl'} text-white font-medium hover:text-primary transition-colors`}
           whileHover={{ scale: 1.1, x: 10 }}
           whileTap={{ scale: 0.95 }}
         >
           Works
         </motion.a>
         <motion.a
-          href="#skills"
-          className="text-white text-3xl md:text-4xl font-medium hover:text-primary transition-colors"
+          href="#skills-section"
+          className={`${isMobile ? 'text-lg sm:text-xl' : 'text-2xl sm:text-3xl md:text-4xl'} text-white font-medium hover:text-primary transition-colors`}
           whileHover={{ scale: 1.1, x: 10 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -185,7 +173,7 @@ export default function HeroSection() {
         </motion.a>
         <motion.a
           href="#services"
-          className="text-white text-3xl md:text-4xl font-medium hover:text-primary transition-colors"
+          className={`${isMobile ? 'text-lg sm:text-xl' : 'text-2xl sm:text-3xl md:text-4xl'} text-white font-medium hover:text-primary transition-colors`}
           whileHover={{ scale: 1.1, x: 10 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -193,7 +181,7 @@ export default function HeroSection() {
         </motion.a>
         <motion.a
           href="#contact"
-          className="text-white text-3xl md:text-4xl font-medium hover:text-primary transition-colors"
+          className={`${isMobile ? 'text-lg sm:text-xl' : 'text-2xl sm:text-3xl md:text-4xl'} text-white font-medium hover:text-primary transition-colors`}
           whileHover={{ scale: 1.1, x: 10 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -206,12 +194,12 @@ export default function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.6, duration: 0.8 }}
-        className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center"
+        className="absolute bottom-6 sm:bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center"
       >
-        <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center mb-2">
+        <div className="w-5 h-8 sm:w-6 sm:h-10 border-2 border-white rounded-full flex justify-center mb-2">
           <motion.div 
             animate={{ 
-              y: [0, 12, 0],
+              y: [0, 8, 0],
             }}
             transition={{ 
               repeat: Infinity, 
@@ -221,7 +209,7 @@ export default function HeroSection() {
             className="w-1.5 h-1.5 bg-primary rounded-full mt-2"
           />
         </div>
-        <p className="text-white text-sm">SCROLL DOWN</p>
+        <p className="text-white text-xs sm:text-sm">SCROLL DOWN</p>
       </motion.div>
     </section>
   )

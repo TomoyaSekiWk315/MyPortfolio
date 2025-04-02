@@ -186,7 +186,8 @@ export default function WorksSection() {
   }
   
   return (
-    <section 
+    <section
+      id="works-section"
       ref={sectionRef}
       className="relative h-[80vh] w-full"
     >
