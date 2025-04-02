@@ -4,6 +4,7 @@ export interface Project {
     title: string;
     description: string;
     imageUrl: string;
+    videoUrl?: string;
     category: string;
     technologies: string[];
     color: string;

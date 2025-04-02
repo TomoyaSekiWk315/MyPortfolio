@@ -53,7 +53,7 @@ export interface Service {
       ],
       imageUrl: "/images/service-web.png",
       color: "#FF7A00",
-      icon: "code"
+      icon: ""
     },
     {
       id: 4,
